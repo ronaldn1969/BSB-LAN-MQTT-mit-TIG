@@ -10,6 +10,8 @@ Voraussetzung ist, dass Ihr schon Telegraf, InfluxDB, Grafana und Mosquitto auf 
 Anmerkung: Ich nutze InfluxDB v1.8.10. Es kann sein, dass die Anpassungen für InfluxDB v2.x nicht passen.
 
 ```
+# Diese Zeilen bitte Eurer telegraf.conf hinzufügen 
+
 # Daten aus dem BSB Adapter in InfluxDB schreiben
 # Wenn Ihr die Datenbank nicht vorher angelegt habt, wird dieses automatisch beim Start von Telegraf gemacht
 # Sollte InfluxDB nicht auf dem gleichen Systemlaufen, bitte die URL anpassen
