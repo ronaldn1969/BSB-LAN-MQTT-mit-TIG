@@ -316,7 +316,7 @@ docker run  -d \
   -v /usr/share/monitoring/influxdb:/var/lib/influxdb \
   -v /usr/share/monitoring/grafana:/var/lib/grafana \
   -v /usr/share/monitoring/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro \
-   integra924:latest'
+   integra924:latest
 ```
 
 Jetzt könnt Ihr über `docker exec -it integra /bin/bash` die Command Line des Containers öffnen und wie weiter oben beschrieben prüfen, ob die Daten in die Influx Datenbank geschrieben werden.
