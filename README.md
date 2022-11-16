@@ -126,6 +126,11 @@ BSB-LAN/json {"BSB-LAN":{"id":8338,"name":"Betriebsstunden Heizbetrieb","value":
 BSB-LAN/json {"BSB-LAN":{"id":8339,"name":"BetriebsstundenTrinkwasserbetrieb","value": "2","desc": "","unit": "h","error": 0}}
 ```
 
+Ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt über ein Publish. 
+
+
+
+
 The main point of difference with this image is:
 
 * Persistence is supported via mounting volumes to a Docker container
