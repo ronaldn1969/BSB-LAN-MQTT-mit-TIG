@@ -82,7 +82,7 @@ time                BSB-LAN_desc BSB-LAN_error BSB-LAN_id BSB-LAN_name          
 1668594759750286265              0             8700       Aussentemperatur                            °C           12.9          pi4-x64 BSB-LAN/json
 ```
 
-## Weitere Information zu BSB-LAN in Verbindung mit MQTT
+## Wer noch kein Telegraf, InfluxDB, Grafana oder Mosquitto nutzt, wird hier fündig
 
 Ich nutze auf meinem Raspberry Pi sehr gerne Docker Container, da dieses m. E. die Administration einfacher macht. Solltet Ihr mit Docker noch keine Erfahrung haben, bitte mal im Internet suchen, da gibt es viel zu entdecken...
 
