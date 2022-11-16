@@ -164,15 +164,158 @@ mosquitto_pub -h 192.168.178.34 -m "S700" -t BSB-LAN -d
 
 **Anmerkung: Ich übernehme keine Verantwortung, wenn Ihr hier die Einstellungen über Mosquitto verändert. Ich zeige Euch an dieser Stelle nur auf, wie der Befehl lautet**
 
-## Erstellen eines TIG Containers
+## Erstellen eines TIG Containers um BSB-LAN MQTT Nachrichten einzusammeln
+
+Neben dem TIG Container benötigt Ihr auch Mosquitto!
 
 Wenn Ihr noch keine TIG Installation auf Eurem System habt, Docker nutzt, könnt Ihr mit hilfe dieses Repo einen eigenen Container erstellen. Im weiteren Verlauf erkläre ich Euch wie.
 
+Aktuell wird der Container mit folgenden Software Versionen erstellt:
+
 | Beschreibung | Wert    |
 |--------------|---------|
-| InfluxDB     | 1.8.10   |
-| Telegraf     | 1.8.6   |
-| Grafana      | 7.2.0   |
+| InfluxDB     | 1.8.10  |
+| Telegraf     | 1.24.3  |
+| Grafana      | 9.2.4   |
+
+Diese können jederzeit durch Euch im Dockerfile angepasst werden. **Ein Wechsel auf Influx v2 ist hier nicht möglich**
+
+```
+# Default versions
+ENV INFLUXDB_VERSION=1.8.10
+#ENV CHRONOGRAF_VERSION=1.8.6
+ENV GRAFANA_VERSION=9.2.4
+ENV TELEGRAF_VERSION 1.24.3-1
+```
+Um den Container erstellen zu können, müsst Ihr dieses Repo auf Euer System clonen. Die folgenden Befehle beziehen sich auf ein Linux System.
+
+Ich clone die Repos immer ins Verzeichnis /opt/. Ihr könnt dieses auf Eure Ansprüche anpassen...
+
+```
+cd /opt/
+sudo git clone https://github.com/ronaldn1969/BSB-LAN-MQTT-mit-TIG    
+cd BSB-LAN-MQTT-mit-TIG
+```
+
+Wenn git nicht verfügbar ist, könnt Ihr es über `sudo apt update && sudo apt install git` installieren.
+
+Jetzt **müsst** Ihr im Verzeichnis telegraf die telegraf.conf um folgende Zeilen erweitern. Bitte beachtet, dass Ihr die IP Adresse Eures MQTT Brokers eintragt.
+
+```
+# Daten aus dem BSB Adapter in InfluxDB schreiben
+# Wenn Ihr die Datenbank nicht vorher angelegt habt, wird dieses automatisch beim Start von Telegraf gemacht
+# Sollte InfluxDB nicht auf dem gleichen Systemlaufen, bitte die URL anpassen
+
+[[outputs.influxdb]]
+urls = ["http://127.0.0.1:8086"]
+namepass = ["bsb"]                   # Wird benötigt, damit nur die Daten vom BSB Adapter in die Datenbank geschrieben werden
+database = "Name der Datenbank"      # Diese Daten werden später benötigt, damit die Datenbank in Grafana eingebunden werden kann
+username = "USER"
+password = "PASSWORT"
+
+## MQTT Daten vom BSB-LAN Adapter bei Mosquitto abfragen ##
+
+[[inputs.mqtt_consumer]]
+servers = ["tcp://IP-Adresse-Mosquitto-Server:1883"]   # Hier Eure IP Adresse eintragen
+
+name_override = "bsb"                # Damit werden die Daten markiert und können im output erkannt werden  
+
+# Solltet Ihr in den BSB-LAN Einstellungen den Topic Präfix geändert haben, hier bitte anpassen
+topics = ["BSB-LAN/json"]            
+
+# Solltet Ihr in den BSB-LAN Einstellungen den Geräte Präfix geändert haben, hier bitte anpassen
+# Über tag_keys könnt Ihr festlegen, welche Werte Ihr säpter in Grafana in den Abfragen verwendet könnt
+tag_keys = ["BSB-LAN_name","BSB-LAN_id"]
+json_string_fields = ["BSB-LAN_name","BSB-LAN_value","BSB-LAN_desc","BSB-LAN_unit"]
+data_format = "json"
+```
+
+Ihr könnt noch weitere Anpassungen vornehmen. z. B. Im Dockerfile die SW Versionen aktualisieren
+
+Oder im Verzeichnis grafana die grafana.ini. Ich habe für mich folgende Anpassungen vorgenommen: 
+
+```
+# Diese Anpassungen sind in der INI nicht enthalten!
+
+# Da ich mich nicht jedesmal anmelden möchte, habe ich den Login deaktiviert 
+
+[auth]
+# Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false
+disable_login_form = true    (line 182)
+
+[auth.anonymous]
+# enable anonymous access
+enabled = true     (line 186)
+
+# specify role for unauthenticated users
+org_role = Admin     (line 192)
+
+# Den Zugriff auf die Grafana URL habe ich auf https umgestellt. Hierzu benötigt Ihr dann eigene Zertifikate
+# Diese müsst Ihr in das Verzeichnis kopieren, dass Ihr später beim Start des Containers mit Grafana verbindet
+
+[server]
+# Protocol (http or https)
+protocol = https     (line 30)
+
+# The http port  to use
+http_port = 3003     (line 36)
+
+# The full public facing url you use in browser, used for redirects and emails
+# If you use reverse proxy and sub path specify full url (with sub path)
+root_url = https://localhost:3003/     (line 47)
+
+# https certs & key file
+cert_file = /var/lib/grafana/MyClientCert-pub.crt     (line 59)
+cert_key = /var/lib/grafana/MyClientCert-priv.key
+```
+
+Wenn Ihr alle Anpassungen vorgenommen habt, könnt Ihr mit `sudo docker build -t integra924 .` den Container erstellen. Den Namen des Containers (intera924) könnt Ihr ebenfalls nach Euren wünschen ändern. Müsst dann aber im weiteren Verlauf in meinen Befehlen Euren Namen nutzen.
+
+## Starten der Container
+
+Ich lege meine Daten alle im Verzeichnis /usr/share/monitoring ab. Dort habe ich dann die benötigten Verzeichnisse angelegt. Solltet Ihr eine andere Verzeichnisstruktur nutzen, müsst Ihr dieses bei den Dockerbefehlen anpassen.
+
+```
+/telefraf
+/mosquitto/config
+/mosquitto/data
+/mosquitto/log
+/grafana
+/Influxdb
+```
+
+### Mosquitto Container starten
+
+```
+docker run -d \
+  --restart=unless-stopped \
+  --name mosquitto \
+  -p 1883:1883 -p 9001:9001 \
+  -v /usr/share/monitoring/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf \
+  -v /usr/share/monitoring/mosquitto/data:/mosquitto/data \
+  -v /usr/share/monitoring/mosquitto/log:/mosquitto/log \
+  eclipse-mosquitto
+```
+
+Jetzt könnt Ihr, wie weiter oben beschrieben prüfen, ob die MQTT Nachrichten vom BSB-LAN Adapter von Mosquitto empfangen werden können.
+
+### TIG Container starten
+
+
+
+
+
+
+alias stopmosquitto='docker stop mosquitto && docker rm mosquitto'
+alias mosquittolog='docker logs mosquitto --details'
+alias mosquittobash='docker exec -it mosquitto /bin/sh'
+
+
+docker run  --network host --restart=unless-stopped -d --name integra -v /usr/share/fritzbox/influxdb:/var/lib/influxdb -v /usr/share/fritzbox/grafana:/var/lib/grafana -v /usr/share/fritzbox/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro -v /:/hostfs:ro -v /proc:/hostfs/proc:ro -v /sys:/hostfs/sys:ro -e HOST_ETC=/hostfs/etc -e HOST_PROC=/hostfs/proc -e HOST_SYS=/hostfs/sys -e HOST_VAR=/hostfs/var -e HOST_RUN=/hostfs/run -e HOST_MOUNT_PREFIX=/hostfs integra920:latest'
+alias stopinflux='docker stop integra && docker rm integra'
+alias influxlog='docker logs integra --details'
+alias influxbash='docker exec -it integra /bin/bash'
+
 
 ## Quick Start
 
