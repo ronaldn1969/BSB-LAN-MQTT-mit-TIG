@@ -269,7 +269,11 @@ cert_file = /var/lib/grafana/MyClientCert-pub.crt     (line 59)
 cert_key = /var/lib/grafana/MyClientCert-priv.key
 ```
 
-Wenn Ihr alle Anpassungen vorgenommen habt, könnt Ihr mit `sudo docker build -t integra924 .` den Container erstellen. Den Namen des Containers (intera924) könnt Ihr ebenfalls nach Euren wünschen ändern. Müsst dann aber im weiteren Verlauf in meinen Befehlen Euren Namen nutzen.
+Wenn Ihr alle Anpassungen vorgenommen habt, könnt Ihr mit 
+
+`sudo docker build -t integra924 .`
+
+den Container erstellen. Den Namen des Containers (intera924) könnt Ihr ebenfalls nach Euren wünschen ändern. Müsst dann aber im weiteren Verlauf in meinen Befehlen Euren Namen nutzen.
 
 ## Starten der Container
 
