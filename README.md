@@ -321,114 +321,52 @@ http://IP-Adresse-des-Systems-auf-dem-der-Continer-laeuft:3003
 https://IP-Adresse-des-Systems-auf-dem-der-Continer-laeuft:3003
 ```
 
+Um auf die Daten zugreifen zu können, muss als erstes unter **Configuration / Data source** Eure Datenbank eingebunden werden. Hier wählt Ihr **add data source** und als Time series databases dann **InfluxDB**
 
+Bei **Name** tragt Ihr den Namen ein, den Ihr als Data source im Dashboard nutzen wollt.
+Bei **URL** tragt Ihr http://localhost:8086 ein.
+Bei **Database** den Namen, den Ihr in der telegraf.conf angegeben habt.
+Bei **User** den Namen, den Ihr in der telegraf.conf angegeben habt.
+Bei **Passord**  das Passwort, das Ihr in der telegraf.conf angegeben habt.
 
-alias stopmosquitto='docker stop mosquitto && docker rm mosquitto'
-alias mosquittolog='docker logs mosquitto --details'
-alias mosquittobash='docker exec -it mosquitto /bin/sh'
+Anschließen klickt Ihr auf **save & test** dann solltet Ihr die Meldung bekommen, dass die Data source eingebunden ist.
 
-
-docker run  --network host --restart=unless-stopped -d --name integra -v /usr/share/fritzbox/influxdb:/var/lib/influxdb -v /usr/share/fritzbox/grafana:/var/lib/grafana -v /usr/share/fritzbox/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro -v /:/hostfs:ro -v /proc:/hostfs/proc:ro -v /sys:/hostfs/sys:ro -e HOST_ETC=/hostfs/etc -e HOST_PROC=/hostfs/proc -e HOST_SYS=/hostfs/sys -e HOST_VAR=/hostfs/var -e HOST_RUN=/hostfs/run -e HOST_MOUNT_PREFIX=/hostfs integra920:latest'
-alias stopinflux='docker stop integra && docker rm integra'
-alias influxlog='docker logs integra --details'
-alias influxbash='docker exec -it integra /bin/bash'
-
-
--v /:/hostfs:ro \
--v /proc:/hostfs/proc:ro \
--v /sys:/hostfs/sys:ro \
--e HOST_ETC=/hostfs/etc \
--e HOST_PROC=/hostfs/proc \
--e HOST_SYS=/hostfs/sys \
--e HOST_VAR=/hostfs/var \
--e HOST_RUN=/hostfs/run \
--e HOST_MOUNT_PREFIX=/hostfs
-
-
-
-## Quick Start
-
-To start the container with persistence you can use the following:
-
-```sh
-docker run -d \
-  --name docker-influxdb-grafana \
-  -p 3003:3003 \
-  -p 3004:8083 \
-  -p 8086:8086 \
-  -v /path/for/influxdb:/var/lib/influxdb \
-  -v /path/for/grafana:/var/lib/grafana \
-  philhawthorne/docker-influxdb-grafana:latest
-```
-
-To stop the container launch:
-
-```sh
-docker stop docker-influxdb-grafana
-```
-
-To start the container again launch:
-
-```sh
-docker start docker-influxdb-grafana
-```
-
-## Mapped Ports
+Jetzt könnt Ihr zum Testen mein Dashboard importieren oder ein eigenes erstellen. In dem Dashboard werden folgende Parameter angezeigt:
 
 ```
-Host		Container		Service
-
-3003		3003			grafana
-3004		8083			chronograf
-8086		8086			influxdb
-```
-## SSH
-
-```sh
-docker exec -it <CONTAINER_ID> bash
-```
-
-## Grafana
-
-Open <http://localhost:3003>
-
-```
-Username: root
-Password: root
+8700    // Außentemperatur
+8703    // Aussentemperatur gedämpft
+8704    // Aussentemperatur gemischt
+8730    // HKPumpe Zustand HK1
+8760    // HKPumpe Zustand HK2
+8820    // TWPumpe Zustand
+8304    // Kesselpumpe Zustand (Q1)
+8773    // VLT HK2 Istwert
+8774    // VLT HK2 Sollwert
 ```
 
-### Add data source on Grafana
+Der Import erfolgt Über **Dashboards / + Import**. Hier wählt Ihr **Upload JSON file** aus. Jetzt müsst Ihr noch Eure Data source auswählen und wenn Ihr die oberen Parameter ebenfalls mitschreibt, sollten sich die Panele mit Werten füllen.
 
-1. Using the wizard click on `Add data source`
-2. Choose a `name` for the source and flag it as `Default`
-3. Choose `InfluxDB` as `type`
-4. Choose `direct` as `access`
-5. Fill remaining fields as follows and click on `Add` without altering other fields
+![image](https://user-images.githubusercontent.com/76207586/202225757-c9198bf7-2257-4c24-842d-19dbf21af989.png)
 
-Basic auth and credentials must be left unflagged. Proxy is not required.
+Bitte beachtet, dass die Daten aus dem BSB-LAN Adapter als String in die Datenbank geschrieben werden. Ihr müsst in Grafana eine Konvertierung von String nach Numeric vornehmen. Das erfolgt im Panel im Reiter Transform
 
-Now you are ready to add your first dashboard and launch some queries on a database.
+![image](https://user-images.githubusercontent.com/76207586/202226038-8144db89-e906-40fe-9f01-aa0b85e74710.png)
 
-## InfluxDB
 
-### Web Interface (Chronograf)
+## Docker Container stoppen/beenden
 
-Open <http://localhost:3004>
+Um die Container zu stoppen gibt es mehrere Möglichkeiten
 
 ```
-Username: root
-Password: root
-Port: 8086
+docker stop container_name && docker rm container_name
 ```
 
-### InfluxDB Shell (CLI)
+Stoppt den Container und löscht ihn aus dem Speicher. Ein Neustart benötigt die komplette Parameterliste
 
-1. Establish a ssh connection with the container
-2. Launch `influx` to open InfluxDB Shell (CLI)
+```
+docker stop container_name
+```
 
-[buymeacoffee-icon]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
-[buymeacoffee]: https://www.buymeacoffee.com/philhawthorne
+Stoppt den Container und er kann mit `docker start container_name` wieder gestartet werden
 
-[grafana-version]: https://img.shields.io/badge/Grafana-7.2.0-brightgreen
-[influx-version]: https://img.shields.io/badge/Influx-1.8.2-brightgreen
-[chronograf-version]: https://img.shields.io/badge/Chronograf-1.8.6-brightgreen
