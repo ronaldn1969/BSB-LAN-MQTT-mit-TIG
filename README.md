@@ -301,8 +301,25 @@ Jetzt könnt Ihr, wie weiter oben beschrieben prüfen, ob die MQTT Nachrichten v
 
 ### TIG Container starten
 
+```
+docker run  -d \
+  --network host \
+  --restart=unless-stopped \
+  --name integra \
+  -v /usr/share/fritzbox/influxdb:/var/lib/influxdb \
+  -v /usr/share/fritzbox/grafana:/var/lib/grafana \
+  -v /usr/share/fritzbox/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro \
+   integra924:latest'
+```
 
+Jetzt könnt Ihr über `docker exec -it integra /bin/bash` die Command Line des Containers öffnen und wie weiter oben beschrieben prüfen, ob die Daten in die Influx Datenbank geschrieben werden.
 
+Um die Daten jetzt in Grafana zu visualisieren, ruft Ihr über den Browser die Grafana GUI auf.
+
+```
+http://IP-Adresse-des-Systems-auf-dem-der-Continer-laeuft:3003
+https://IP-Adresse-des-Systems-auf-dem-der-Continer-laeuft:3003
+```
 
 
 
@@ -315,6 +332,18 @@ docker run  --network host --restart=unless-stopped -d --name integra -v /usr/sh
 alias stopinflux='docker stop integra && docker rm integra'
 alias influxlog='docker logs integra --details'
 alias influxbash='docker exec -it integra /bin/bash'
+
+
+-v /:/hostfs:ro \
+-v /proc:/hostfs/proc:ro \
+-v /sys:/hostfs/sys:ro \
+-e HOST_ETC=/hostfs/etc \
+-e HOST_PROC=/hostfs/proc \
+-e HOST_SYS=/hostfs/sys \
+-e HOST_VAR=/hostfs/var \
+-e HOST_RUN=/hostfs/run \
+-e HOST_MOUNT_PREFIX=/hostfs
+
 
 
 ## Quick Start
