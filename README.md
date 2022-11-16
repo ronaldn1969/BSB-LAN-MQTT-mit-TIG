@@ -16,7 +16,7 @@ BSB-LAN/json {"BSB-LAN":{"id":8700,"name":"Aussentemperatur","value": "12.8","de
 
 Bitte auch beachten, dass das Loginterval im Standard auf 3600 Sekunden steht. Ich habe es für mich auf 60 Sekunden reduziert.
 
-Anmerkung: Ich nutze InfluxDB v1.8.10. Es kann sein, dass die Anpassungen für InfluxDB v2.x nicht passen.
+**Anmerkung:** Ich nutze InfluxDB v1.8.10. Es kann sein, dass die Anpassungen für InfluxDB v2.x nicht passen.
 
 ```
 # Diese Zeilen bitte Eurer telegraf.conf hinzufügen 
@@ -77,6 +77,8 @@ time                BSB-LAN_desc BSB-LAN_error BSB-LAN_id BSB-LAN_name          
 
 Ich nutze auf meinem Raspberry Pi sehr gerne Docker Container, da dieses m. E. die Administration einfacher macht. Solltet Ihr mit Docker noch keine Erfahrung haben, bitte mal im Internet suchen, da gibt es viel zu entdecken...
 
+Ihr müsst aber nicht Docker verwenden. Ihr könnt die Programme auch originär auf Eurem System installieren. Hierzu bitte im Internet schauen, wie diese zu erfolgen hat.
+
 Um Docker auf dem Raspberry PI zu installieren, könnt Ihr wie folgt vorgehen: 
 
 ```
@@ -126,7 +128,32 @@ BSB-LAN/json {"BSB-LAN":{"id":8338,"name":"Betriebsstunden Heizbetrieb","value":
 BSB-LAN/json {"BSB-LAN":{"id":8339,"name":"BetriebsstundenTrinkwasserbetrieb","value": "2","desc": "","unit": "h","error": 0}}
 ```
 
-Ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt über ein Publish. 
+Neben den zyklischen Abfragen könnt Ihr über ein publish auch Parameter abfragen, die nicht in der Parameterliste in den Einstellungen enthalten sind.
+
+Ich nutze hier zwei Terminalfester, eins für den publish (Senden) und eins für die subscripten (Empfangen)...
+
+```
+mosquitto_pub -h 192.168.178.34 -m "700" -t BSB-LAN -d 
+Client null sending CONNECT
+Client null received CONNACK (0)
+Client null sending PUBLISH (d0, q0, r0, m1, 'BSB-LAN', ... (3 bytes))
+Client null sending DISCONNECT
+```
+
+```
+mosquitto_sub -t "BSB-LAN/#" -v
+BSB-LAN 700
+BSB-LAN/MQTT ACK_700
+BSB-LAN/json {"BSB-LAN":{"id":700,"name":"Betriebsart","value": "3","desc": "Komfort","unit": "","error": 0}}
+```
+
+Der Vollständigkeitshalber noch die Information, ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt ebenfalls  über ein Publish. Hier muss dem Parameter noch ein "S" vorgestellt werden. 
+
+```
+mosquitto_pub -h 192.168.178.34 -m "S700" -t BSB-LAN -d 
+```
+
+**Anmerkung: Ich übernehme keine Verantwortung, wenn Ihr hier die Einstellungen über Mosquitto verändert. Ich zeige Euch an dieser Stelle nur auf, wie der Befehl lautet**
 
 
 
