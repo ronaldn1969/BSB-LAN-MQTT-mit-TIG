@@ -1,13 +1,49 @@
-# Docker Image with InfluxDB and Grafana
+Ausgang ist das Repo von Phil Hawthorne, ich habe es für meine Bedürfnisse angepasst. Bedeutet, ich habe Chronograf entfernt und Telegraf hinzugefügt.
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/philhawthorne/docker-influxdb-grafana.svg)](https://dockerhub.com/philhawthorne/docker-influxdb-grafana) [![license](https://img.shields.io/github/license/philhawthorne/docker-influxdb-grafana.svg)](https://dockerhub.com/philhawthorne/docker-influxdb-grafana)
-
-![Grafana][grafana-version] ![Influx][influx-version] ![Chronograf][chronograf-version]
-
-[![Buy me a coffee][buymeacoffee-icon]][buymeacoffee]
+Anmerkung von Phil: This is a Docker image based on the awesome [Docker Image with Telegraf (StatsD), InfluxDB and Grafana](https://github.com/samuelebistoletti/docker-statsd-influxdb-grafana) from [Samuele Bistoletti](https://github.com/samuelebistoletti).
 
 
-This is a Docker image based on the awesome [Docker Image with Telegraf (StatsD), InfluxDB and Grafana](https://github.com/samuelebistoletti/docker-statsd-influxdb-grafana) from [Samuele Bistoletti](https://github.com/samuelebistoletti).
+## Anpassungen in der telegraf.conf, damit die MQTT Daten vom BSB-LAN in eine InfluxDB geschrieben werden können
+
+Voraussetzung ist, dass Ihr schon Telegraf, InfluxDB, Grafana und Mosquitto auf Eurem System laufen habt. Wenn nicht, könnt Ihr weiter unten entnehmen, wie Ihr Euch einen einen TIG Container erstellen könnt und Mosquitto installiert.
+
+Anmerkung: Ich nutze InfluxDB v1.8.10. Es kann sein, dass die Anpassungen für InfluxDB v2.x nicht passen.
+
+```
+# Daten aus dem BSB Adapter in InfluxDB schreiben
+# Wenn Ihr die Datenbank nicht vorher angelegt habt, wird dieses automatisch beim Start von Telegraf gemacht
+# Sollte InfluxDB nicht auf dem gleichen Systemlaufen, bitte die URL anpassen
+
+[[outputs.influxdb]]
+urls = ["http://127.0.0.1:8086"]
+namepass = ["bsb"]                   # Wird benötigt, damit nur die Daten vom BSB Adapter in die Datenbank geschrieben werden
+database = "Name der Datenbank"
+username = "USER"
+password = "PASSWORT"
+
+## MQTT Daten vom BSB-LAN Adapter bei Mosquitto abfragen ##
+
+[[inputs.mqtt_consumer]]
+servers = ["tcp://IP-Adresse-Mosquitto-Server:1883"]
+
+ # Damit werden die Daten markiert und können im output erkannt werden
+name_override = "bsb"               
+
+# Solltet Ihr in den BSB-LAN Einstellungen Topic Präfix geändert haben, hier bitte anpassen
+topics = ["BSB-LAN/json"]            
+
+# Solltet Ihr in den BSB-LAN Einstellungen Geräte Präfix geändert haben, hier bitte anpassen
+# Über tag_keys könnt Ihr festlegen, welche Werte Ihr säpter in Grafana in den Abfragen verwendet könnt
+tag_keys = ["BSB-LAN_name","BSB-LAN_id"]
+json_string_fields = ["BSB-LAN_name","BSB-LAN_value","BSB-LAN_desc","BSB-LAN_unit"]
+data_format = "json"
+```
+
+
+
+
+
+
 
 The main point of difference with this image is:
 
