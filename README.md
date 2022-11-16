@@ -88,7 +88,7 @@ Ich nutze auf meinem Raspberry Pi sehr gerne Docker Container, da dieses m. E. d
 
 Ihr müsst aber nicht Docker verwenden. Ihr könnt die Programme auch originär auf Eurem System installieren. Hierzu bitte im Internet schauen, wie diese zu erfolgen hat.
 
-Um Docker auf dem Raspberry PI zu installieren, könnt Ihr wie folgt vorgehen: 
+Um Docker auf dem **Raspberry PI** zu installieren, könnt Ihr wie folgt vorgehen: 
 
 ```
 sudo curl -fsSL https://get.docker.com | sh
@@ -99,12 +99,13 @@ logout
 ### Mosquitto als MQTT Broker
 
 Ich nutze Mosquitto als MQTT Brocker auf meinem Pi. Das Docker Image gibt es hier: https://hub.docker.com/_/eclipse-mosquitto
-Dort wird auch beschrieben, wie Ihr das Image nutzen könnt. Wenn Ihr die drei Verzeichnisse und die mosquitto.conf angelegt habt, erweitert Ihr die mosquitto.conf um folgende zwei Zeilen
+Dort wird auch beschrieben, wie Ihr das Image nutzen könnt. Wenn Ihr die drei Verzeichnisse und die mosquitto.conf angelegt habt, erweitert Ihr die, auf der Seite vorgegebene mosquitto.conf um folgende zwei Zeilen
 
 ```
 listener 1883
 allow_anonymous true
 ```
+
 Der listener ist wichtig, anderen Falls werden die MQTT Nachrichten im Container nicht sichtbar. Solltet Ihr Mosquitto mit User/Passwort verwenden wollen, bitte im Internet suchen.
 
 Wenn Ihr den Mosquitto Container gestartet hat, könnt Ihr mit folgendem Befehl in die Console des Conatiners wechseln
@@ -279,6 +280,8 @@ den Container erstellen. Den Namen des Containers (intera924) könnt Ihr ebenfal
 
 Ich lege meine Daten alle im Verzeichnis /usr/share/monitoring ab. Dort habe ich dann die benötigten Verzeichnisse angelegt. Solltet Ihr eine andere Verzeichnisstruktur nutzen, müsst Ihr dieses bei den Dockerbefehlen anpassen.
 
+Die von Euch modifizierte telegraf.conf solltet Ihr auch im Verzeichnis /telegraf ablegen. Diese wird bei jedem Start des Containers in diesen gemappt. Hat den vorteil, dass Ihr die Konfig ändern könnt, ohne den Container neuzubauen. 
+
 ```
 /telefraf
 /mosquitto/config
@@ -310,9 +313,9 @@ docker run  -d \
   --network host \
   --restart=unless-stopped \
   --name integra \
-  -v /usr/share/fritzbox/influxdb:/var/lib/influxdb \
-  -v /usr/share/fritzbox/grafana:/var/lib/grafana \
-  -v /usr/share/fritzbox/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro \
+  -v /usr/share/monitoring/influxdb:/var/lib/influxdb \
+  -v /usr/share/monitoring/grafana:/var/lib/grafana \
+  -v /usr/share/monitoring/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro \
    integra924:latest'
 ```
 
