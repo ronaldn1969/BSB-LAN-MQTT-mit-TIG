@@ -1,4 +1,5 @@
-Ausgang ist das Repo von Phil Hawthorne, ich habe es für meine Bedürfnisse angepasst. Bedeutet, ich habe Chronograf entfernt und Telegraf hinzugefügt.
+Ausgang ist das Repo von Phil Hawthorne. Danke für die Vorarbeit.
+Ich habe die Dateien auf meine Bedürfnisse angepasst. Ich habe Chronograf entfernt und Telegraf hinzugefügt und die Versionen angepasst.
 
 Anmerkung von Phil: This is a Docker image based on the awesome [Docker Image with Telegraf (StatsD), InfluxDB and Grafana](https://github.com/samuelebistoletti/docker-statsd-influxdb-grafana) from [Samuele Bistoletti](https://github.com/samuelebistoletti).
 
@@ -19,7 +20,7 @@ Anmerkung: Ich nutze InfluxDB v1.8.10. Es kann sein, dass die Anpassungen für I
 [[outputs.influxdb]]
 urls = ["http://127.0.0.1:8086"]
 namepass = ["bsb"]                   # Wird benötigt, damit nur die Daten vom BSB Adapter in die Datenbank geschrieben werden
-database = "Name der Datenbank"
+database = "Name der Datenbank"      # Diese Daten werden später benötigt, damit die Datenbank in Grafana eingebunden werden kann
 username = "USER"
 password = "PASSWORT"
 
