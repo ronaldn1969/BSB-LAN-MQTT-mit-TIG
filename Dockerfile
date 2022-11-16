@@ -1,19 +1,20 @@
-FROM debian:stretch-slim
+FROM debian:bullseye-slim
 LABEL maintainer="Phil Hawthorne <me@philhawthorne.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
 
 # Default versions
-ENV INFLUXDB_VERSION=1.8.2
-ENV CHRONOGRAF_VERSION=1.8.6
-ENV GRAFANA_VERSION=7.2.0
+ENV INFLUXDB_VERSION=1.8.10
+#ENV CHRONOGRAF_VERSION=1.8.6
+ENV GRAFANA_VERSION=9.2.0
+ENV TELEGRAF_VERSION 1.24.2-1
 
 # Grafana database type
 ENV GF_DATABASE_TYPE=sqlite3
 
 # Fix bad proxy issue
-COPY system/99fixbadproxy /etc/apt/apt.conf.d/99fixbadproxy
+#COPY system/99fixbadproxy /etc/apt/apt.conf.d/99fixbadproxy
 
 WORKDIR /root
 
@@ -42,17 +43,23 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" && \
         supervisor \
         wget \
         gnupg \
-    && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && mkdir -p /var/log/supervisor \
     && rm -rf .profile \
     # Install InfluxDB
-    && wget --no-verbose https://dl.influxdata.com/influxdb/releases/influxdb_${INFLUXDB_VERSION}_${ARCH}.deb \
+#    && wget --no-verbose https://dl.influxdata.com/influxdb/releases/influxdb_${INFLUXDB_VERSION}_${ARCH}.deb \
+    && wget --no-verbose https://repos.influxdata.com/debian/packages/influxdb_${INFLUXDB_VERSION}_${ARCH}.deb \
     && dpkg -i influxdb_${INFLUXDB_VERSION}_${ARCH}.deb \
     && rm influxdb_${INFLUXDB_VERSION}_${ARCH}.deb \
+    # Install Telegraf
+#    && wget https://repos.influxdata.com/debian/pool/stable/t/telegraf/telegraf_${TELEGRAF_VERSION}_${ARCH}.deb \
+    && wget https://repos.influxdata.com/debian/packages/telegraf_${TELEGRAF_VERSION}_${ARCH}.deb \
+    && dpkg -i telegraf_${TELEGRAF_VERSION}_${ARCH}.deb \
+    && rm telegraf_${TELEGRAF_VERSION}_${ARCH}.deb \
     # Install Chronograf
-    && wget https://dl.influxdata.com/chronograf/releases/chronograf_${CHRONOGRAF_VERSION}_${ARCH}.deb \
-    && dpkg -i chronograf_${CHRONOGRAF_VERSION}_${ARCH}.deb && rm chronograf_${CHRONOGRAF_VERSION}_${ARCH}.deb \
+    #&& wget https://dl.influxdata.com/chronograf/releases/chronograf_${CHRONOGRAF_VERSION}_${ARCH}.deb \
+    #&& dpkg -i chronograf_${CHRONOGRAF_VERSION}_${ARCH}.deb && rm chronograf_${CHRONOGRAF_VERSION}_${ARCH}.deb \
     # Install Grafana
     && wget https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_${ARCH}.deb \
     && dpkg -i grafana_${GRAFANA_VERSION}_${ARCH}.deb \
@@ -67,6 +74,11 @@ COPY bash/profile .profile
 
 # Configure InfluxDB
 COPY influxdb/influxdb.conf /etc/influxdb/influxdb.conf
+
+# Configure Telegraf
+#RUN mv -f /etc/telegraf/telegraf.conf /etc/telegraf/telegraf.conf.default 
+COPY telegraf/telegraf.conf /etc/telegraf/telegraf.conf
+#COPY telegraf/init.sh /etc/init.d/telegraf
 
 # Configure Grafana
 COPY grafana/grafana.ini /etc/grafana/grafana.ini
