@@ -1,14 +1,23 @@
-Ausgang ist das Repo von Phil Hawthorne. Danke für die Vorarbeit.
-Ich habe die Dateien auf meine Bedürfnisse angepasst. Ich habe Chronograf entfernt und Telegraf hinzugefügt und die Versionen angepasst.
+## Was ist BSB-LAN
+
+"BSB-LPB-LAN" ist ein gemeinschaftliches Hard- und Softwareprojekt, welches ursprünglich zum Ziel hatte, mittels PC/Laptop/Tablet/Smartphone Zugriff auf die Steuerungen bzw. Regler von verschiedenen Wärmeerzeugern (Öl- und Gasheizungen, Wärmepumpen, Solarthermie etc.) bestimmter Hersteller (bspw. Brötje und Elco) zu erlangen. Im weiteren Verlauf wäre es dann wünschenswert, Daten auszulesen, sie weiter zu verarbeiten (z.B. loggen und grafisch darstellen) oder gar Einfluss auf die Steuerung/Regelung nehmen zu können und das System in bestehende SmartHome-Systeme einzubinden.
+
+Weitere Inflormationen gibt es hier: https://github.com/1coderookie/BSB-LPB-LAN
+
+## Meine Installation
+
+Da ich schon meine FritzBox, Raspberry Pi, Shellies und Govee Thermometer schon über Mosquitto, Telegraf, InfluxDB und Grafana (als Docker Container) monitore, war es für mich klar, den BSB-LAN Adapter hier ebenfalls zu integrieren. 
+
+Ausgang meiner TIG Installation ist das Repo von Phil Hawthorne. Danke für die Vorarbeit. Ich habe einen Teile der Dateien (Dockerfile und INIs) auf meine Bedürfnisse angepasst. Da ich Chronograf nicht nutze, habe ich es aus der Installation entfernt und Telegraf hinzugefügt. Des Weiteren habe ich die Versionen aktualisiert.
 
 Anmerkung von Phil: This is a Docker image based on the awesome [Docker Image with Telegraf (StatsD), InfluxDB and Grafana](https://github.com/samuelebistoletti/docker-statsd-influxdb-grafana) from [Samuele Bistoletti](https://github.com/samuelebistoletti).
 
 
-## Anpassungen in der telegraf.conf, damit die MQTT Daten vom BSB-LAN in eine InfluxDB geschrieben werden können
+### Anpassungen in der telegraf.conf, damit die MQTT Nachrichten vom BSB-LAN in eine InfluxDB geschrieben werden
 
-Voraussetzung ist, dass Ihr schon Telegraf, InfluxDB, Grafana und Mosquitto auf Eurem System laufen habt. Wenn nicht, könnt Ihr weiter unten entnehmen, wie Ihr Euch einen einen TIG Container erstellen könnt und Mosquitto installiert.
+Voraussetzung ist, dass Ihr Telegraf, InfluxDB und Mosquitto auf Eurem System laufen habt. Wenn nicht, könnt Ihr weiter unten entnehmen, wie Ihr Euch einen TIG Container erstellt und Mosquitto installiert. Es ist kein Zwang, Docker zu verwenden.
 
-Des Weiteren müsst Ihr in den BSB-LAN Einstellungen bei MQTT Verwenden Rich JSON auswählen. Dann werden die Daten in folgender Struktur geliefert:
+Des Weiteren müsst Ihr in den BSB-LAN Einstellungen, bei MQTT Verwenden, Rich JSON auswählen. Dann werden die Daten in folgender Struktur geliefert:
 
 ```
 BSB-LAN/json {"BSB-LAN":{"id":8700,"name":"Aussentemperatur","value": "12.8","desc": "","unit": "°C","error": 0}}
@@ -73,7 +82,7 @@ time                BSB-LAN_desc BSB-LAN_error BSB-LAN_id BSB-LAN_name          
 1668594759750286265              0             8700       Aussentemperatur                            °C           12.9          pi4-x64 BSB-LAN/json
 ```
 
-## BSB-LAN und MQTT
+## Weitere Information zu BSB-LAN in Verbindung mit MQTT
 
 Ich nutze auf meinem Raspberry Pi sehr gerne Docker Container, da dieses m. E. die Administration einfacher macht. Solltet Ihr mit Docker noch keine Erfahrung haben, bitte mal im Internet suchen, da gibt es viel zu entdecken...
 
@@ -155,21 +164,14 @@ mosquitto_pub -h 192.168.178.34 -m "S700" -t BSB-LAN -d
 
 **Anmerkung: Ich übernehme keine Verantwortung, wenn Ihr hier die Einstellungen über Mosquitto verändert. Ich zeige Euch an dieser Stelle nur auf, wie der Befehl lautet**
 
+## Erstellen eines TIG Containers
 
+Wenn Ihr noch keine TIG Installation auf Eurem System habt, Docker nutzt, könnt Ihr mit hilfe dieses Repo einen eigenen Container erstellen. Im weiteren Verlauf erkläre ich Euch wie.
 
-
-The main point of difference with this image is:
-
-* Persistence is supported via mounting volumes to a Docker container
-* Grafana will store its data in SQLite files instead of a MySQL table on the container, so MySQL is not installed
-* Telegraf (StatsD) is not included in this container
-
-The main purpose of this image is to be used to show data from a [Home Assistant](https://home-assistant.io) installation. For more information on how to do that, please see my website about how I use this container.
-
-| Description  | Value   |
+| Beschreibung | Wert    |
 |--------------|---------|
-| InfluxDB     | 1.8.2   |
-| ChronoGraf   | 1.8.6   |
+| InfluxDB     | 1.8.10   |
+| Telegraf     | 1.8.6   |
 | Grafana      | 7.2.0   |
 
 ## Quick Start
