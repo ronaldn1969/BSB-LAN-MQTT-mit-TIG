@@ -13,8 +13,6 @@ ENV TELEGRAF_VERSION 1.24.3-1
 # Grafana database type
 ENV GF_DATABASE_TYPE=sqlite3
 
-# Fix bad proxy issue
-#COPY system/99fixbadproxy /etc/apt/apt.conf.d/99fixbadproxy
 
 WORKDIR /root
 
