@@ -162,18 +162,6 @@
             "regex": "bsb.(.*)",
             "renamePattern": "$1"
           }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Außentemperatur"
-              }
-            ],
-            "fields": {}
-          }
         }
       ],
       "type": "stat"
@@ -268,18 +256,6 @@
           "options": {
             "regex": "bsb.(.*)",
             "renamePattern": "$1"
-          }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Außentemperatur gedämpft"
-              }
-            ],
-            "fields": {}
           }
         }
       ],
@@ -376,18 +352,6 @@
             "regex": "bsb.(.*)",
             "renamePattern": "$1"
           }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Außentemperatur gemischt"
-              }
-            ],
-            "fields": {}
-          }
         }
       ],
       "type": "stat"
@@ -483,18 +447,6 @@
             "regex": "bsb.(.*)",
             "renamePattern": "$1"
           }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "VL Temp soll HK 2"
-              }
-            ],
-            "fields": {}
-          }
         }
       ],
       "type": "stat"
@@ -589,18 +541,6 @@
           "options": {
             "regex": "bsb.(.*)",
             "renamePattern": "$1"
-          }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "VL Temp ist HK 2"
-              }
-            ],
-            "fields": {}
           }
         }
       ],
@@ -1016,18 +956,6 @@
       "title": "Außentemperatur",
       "transformations": [
         {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Außentemperatur"
-              }
-            ],
-            "fields": {}
-          }
-        },
-        {
           "id": "renameByRegex",
           "options": {
             "regex": "bsb.(.*)",
@@ -1218,22 +1146,6 @@
       ],
       "title": "Vorlauftemperatur HK 2",
       "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "VL Temp HK2 ist"
-              },
-              {
-                "destinationType": "number",
-                "targetField": "VL Temp HK2 soll"
-              }
-            ],
-            "fields": {}
-          }
-        },
         {
           "id": "renameByRegex",
           "options": {
