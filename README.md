@@ -8,7 +8,7 @@ Weitere Inflormationen gibt es hier: https://github.com/1coderookie/BSB-LPB-LAN
 
 Da ich schon meine FritzBox, Raspberry Pi, Shellies und Govee Thermometer schon über Mosquitto, Telegraf, InfluxDB und Grafana (als Docker Container) monitore, war es für mich klar, den BSB-LAN Adapter hier ebenfalls zu integrieren. 
 
-Ausgang meiner TIG Installation ist das Repo von Phil Hawthorne. Danke für die Vorarbeit. Ich habe einen Teile der Dateien (Dockerfile und INIs) auf meine Bedürfnisse angepasst. Da ich Chronograf nicht nutze, habe ich es aus der Installation entfernt und Telegraf hinzugefügt. Des Weiteren habe ich die Versionen aktualisiert.
+Ausgang meiner TIG Installation ist das Repo von Phil Hawthorne. Danke für die Vorarbeit. Ich habe einen Teil der Dateien (Dockerfile und INIs) auf meine Bedürfnisse angepasst. Da ich Chronograf nicht nutze, habe ich es aus der Installation entfernt und Telegraf hinzugefügt. Des Weiteren habe ich die Versionen aktualisiert.
 
 Anmerkung von Phil: This is a Docker image based on the awesome [Docker Image with Telegraf (StatsD), InfluxDB and Grafana](https://github.com/samuelebistoletti/docker-statsd-influxdb-grafana) from [Samuele Bistoletti](https://github.com/samuelebistoletti).
 
@@ -52,7 +52,7 @@ name_override = "bsb"                # Damit werden die Daten markiert und könn
 topics = ["BSB-LAN/json"]            
 
 # Solltet Ihr in den BSB-LAN Einstellungen den Geräte Präfix geändert haben, hier bitte anpassen
-# Über tag_keys könnt Ihr festlegen, welche Werte Ihr säpter in Grafana in den Abfragen verwendet könnt
+# Über tag_keys könnt Ihr festlegen, welche Werte Ihr später in Grafana in den Abfragen verwendet könnt
 tag_keys = ["BSB-LAN_name","BSB-LAN_id"]
 json_string_fields = ["BSB-LAN_name","BSB-LAN_value","BSB-LAN_desc","BSB-LAN_unit"]
 data_format = "json"
@@ -157,7 +157,7 @@ BSB-LAN/MQTT ACK_700
 BSB-LAN/json {"BSB-LAN":{"id":700,"name":"Betriebsart","value": "3","desc": "Komfort","unit": "","error": 0}}
 ```
 
-Der Vollständigkeitshalber noch die Information, ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt ebenfalls  über ein Publish. Hier muss dem Parameter noch ein "S" vorgestellt werden. 
+Der Vollständigkeitshalber noch die Information, ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt ebenfalls über ein Publish. Hier muss dem Parameter noch ein "S" vorgestellt werden. 
 
 ```
 mosquitto_pub -h 192.168.178.34 -m "S700" -t BSB-LAN -d 
@@ -169,9 +169,9 @@ mosquitto_pub -h 192.168.178.34 -m "S700" -t BSB-LAN -d
 
 Neben dem TIG Container benötigt Ihr auch Mosquitto!
 
-Wenn Ihr noch keine TIG Installation auf Eurem System habt, Docker nutzt, könnt Ihr mit hilfe dieses Repo einen eigenen Container erstellen. Im weiteren Verlauf erkläre ich Euch wie.
+Wenn Ihr noch keine TIG Installation auf Eurem System habt, Docker nutzt, könnt Ihr mit Hilfe dieses Repo einen eigenen Container erstellen. Im weiteren Verlauf erkläre ich Euch wie.
 
-Aktuell wird der Container mit folgenden Software Versionen erstellt:
+Aktuell wird der Container mit folgenden Software-Versionen erstellt:
 
 | Beschreibung | Wert    |
 |--------------|---------|
@@ -225,7 +225,7 @@ name_override = "bsb"                # Damit werden die Daten markiert und könn
 topics = ["BSB-LAN/json"]            
 
 # Solltet Ihr in den BSB-LAN Einstellungen den Geräte Präfix geändert haben, hier bitte anpassen
-# Über tag_keys könnt Ihr festlegen, welche Werte Ihr säpter in Grafana in den Abfragen verwendet könnt
+# Über tag_keys könnt Ihr festlegen, welche Werte Ihr später in Grafana in den Abfragen verwendet könnt
 tag_keys = ["BSB-LAN_name","BSB-LAN_id"]
 json_string_fields = ["BSB-LAN_name","BSB-LAN_value","BSB-LAN_desc","BSB-LAN_unit"]
 data_format = "json"
@@ -238,7 +238,7 @@ Oder im Verzeichnis grafana die grafana.ini. Ich habe für mich folgende Anpassu
 ```
 # Diese Anpassungen sind in der INI nicht enthalten!
 
-# Da ich mich nicht jedesmal anmelden möchte, habe ich den Login deaktiviert 
+# Da ich mich nicht jedes Mal anmelden möchte, habe ich den Login deaktiviert 
 
 [auth]
 # Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false
@@ -280,7 +280,7 @@ den Container erstellen. Den Namen des Containers (intera924) könnt Ihr ebenfal
 
 Ich lege meine Daten alle im Verzeichnis /usr/share/monitoring ab. Dort habe ich dann die benötigten Verzeichnisse angelegt. Solltet Ihr eine andere Verzeichnisstruktur nutzen, müsst Ihr dieses bei den Dockerbefehlen anpassen.
 
-Die von Euch modifizierte telegraf.conf solltet Ihr auch im Verzeichnis /telegraf ablegen. Diese wird bei jedem Start des Containers in diesen gemappt. Hat den vorteil, dass Ihr die Konfig ändern könnt, ohne den Container neuzubauen. 
+Die von Euch modifizierte telegraf.conf solltet Ihr auch im Verzeichnis /telegraf ablegen. Diese wird bei jedem Start des Containers in diesen gemappt. Hat den Vorteil, dass Ihr die Konfig ändern könnt, ohne den Container neuzubauen. 
 
 ```
 /telefraf
@@ -338,12 +338,12 @@ Bei **Passord**  das Passwort, das Ihr in der telegraf.conf angegeben habt.
 
 Anschließen klickt Ihr auf **save & test** dann solltet Ihr die Meldung bekommen, dass die Data source eingebunden ist.
 
-Jetzt könnt Ihr zum Testen mein Dashboard importieren oder ein eigenes erstellen. In dem Dashboard werden folgende Parameter angezeigt:
+Jetzt könnt Ihr zum Testen mein Dashboard importieren oder ein eigenes Erstellen. In dem Dashboard werden folgende Parameter angezeigt:
 
 ```
 8700    // Außentemperatur
-8703    // Aussentemperatur gedämpft
-8704    // Aussentemperatur gemischt
+8703    // Außentemperatur gedämpft
+8704    // Außentemperatur gemischt
 8730    // HKPumpe Zustand HK1
 8760    // HKPumpe Zustand HK2
 8820    // TWPumpe Zustand
