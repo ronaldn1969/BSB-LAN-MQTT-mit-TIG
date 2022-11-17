@@ -56,6 +56,12 @@ topics = ["BSB-LAN/json"]
 tag_keys = ["BSB-LAN_name","BSB-LAN_id"]
 json_string_fields = ["BSB-LAN_name","BSB-LAN_value","BSB-LAN_desc","BSB-LAN_unit"]
 data_format = "json"
+
+# Die Werte kommen als String an und werden hier in float umgewandelt, damit diese in Grafana genutzt werden können
+[[processors.converter]]
+namepass = ["bsb"]
+[processors.converter.fields]
+float = ["BSB-LAN_value"]
 ```
 
 Wenn Ihr nun Telegraf neustartet, werden die Daten eingesammelt und in die Datenbank geschrieben. Prüfen könnt Ihr dieses, in dem Ihr die CLI von Influx startet und die BSB Datenbank auswählt, die Ihr in der telegraf.conf angegeben habt. Über name_override wird das Measurement (bsb) in der Datenbank festgelegt.
@@ -229,6 +235,12 @@ topics = ["BSB-LAN/json"]
 tag_keys = ["BSB-LAN_name","BSB-LAN_id"]
 json_string_fields = ["BSB-LAN_name","BSB-LAN_value","BSB-LAN_desc","BSB-LAN_unit"]
 data_format = "json"
+
+# Die Werte kommen als String an und werden hier in float umgewandelt, damit diese in Grafana genutzt werden können
+[[processors.converter]]
+namepass = ["bsb"]
+[processors.converter.fields]
+float = ["BSB-LAN_value"]
 ```
 
 Ihr könnt noch weitere Anpassungen vornehmen. z. B. Im Dockerfile die SW Versionen aktualisieren
@@ -352,13 +364,9 @@ Jetzt könnt Ihr zum Testen mein Dashboard importieren oder ein eigenes Erstelle
 8774    // VLT HK2 Sollwert
 ```
 
-Der Import erfolgt Über **Dashboards / + Import**. Hier wählt Ihr **Upload JSON file** aus. Jetzt müsst Ihr noch Eure Data source auswählen und wenn Ihr die oberen Parameter ebenfalls mitschreibt, sollten sich die Panele mit Werten füllen.
+Der Import erfolgt Über **Dashboards / + Import**. Hier wählt Ihr **Upload JSON file** aus. Jetzt müsst Ihr noch Eure Data source auswählen und wenn Ihr die oberen Parameter ebenfalls mitschreibt, sollten sich die Panel mit Werten füllen.
 
 ![image](https://user-images.githubusercontent.com/76207586/202225757-c9198bf7-2257-4c24-842d-19dbf21af989.png)
-
-Bitte beachtet, dass die Daten aus dem BSB-LAN Adapter als String in die Datenbank geschrieben werden. Ihr müsst in Grafana eine Konvertierung von String nach Numeric vornehmen. Das erfolgt im Panel im Reiter Transform
-
-![image](https://user-images.githubusercontent.com/76207586/202226038-8144db89-e906-40fe-9f01-aa0b85e74710.png)
 
 
 ## Docker Container stoppen/beenden
