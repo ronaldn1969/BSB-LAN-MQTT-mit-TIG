@@ -163,10 +163,23 @@ BSB-LAN/MQTT ACK_700
 BSB-LAN/json {"BSB-LAN":{"id":700,"name":"Betriebsart","value": "3","desc": "Komfort","unit": "","error": 0}}
 ```
 
-Der Vollständigkeitshalber noch die Information, ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt ebenfalls über ein Publish. Hier muss dem Parameter noch ein "S" vorgestellt werden. 
+Der Vollständigkeitshalber noch die Information, ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt ebenfalls über ein Publish. Hier muss dem Parameter noch ein "S" vorgestellt werden. Voraussetzung ist, dass Ihr den Schreibzugriff in den Einstellungen freigegeben habt. 
 
 ```
-mosquitto_pub -h 192.168.178.34 -m "S710=20" -t BSB-LAN -d 
+mosquitto_pub -h 192.168.178.34 -m "S1010=20" -t BSB-LAN -d 
+```
+
+```
+/ # mosquitto_pub -h 192.168.178.34 -m "S1010=20" -t BSB-LAN -d
+Client null sending CONNECT
+Client null received CONNACK (0)
+Client null sending PUBLISH (d0, q0, r0, m1, 'BSB-LAN', ... (8 bytes))
+Client null sending DISCONNECT
+
+Antwort:
+BSB-LAN 1010
+BSB-LAN/MQTT ACK_1010
+BSB-LAN/json {"BSB-LAN":{"id":1010,"name":"Komfortsollwert","value": "20.0","desc": "","unit": "°C","error": 0}}
 ```
 
 **Anmerkung: Ich übernehme keine Verantwortung, wenn Ihr hier die Einstellungen über Mosquitto verändert. Ich zeige Euch an dieser Stelle nur auf, wie der Befehl lautet**
