@@ -166,7 +166,7 @@ BSB-LAN/json {"BSB-LAN":{"id":700,"name":"Betriebsart","value": "3","desc": "Kom
 Der Vollständigkeitshalber noch die Information, ihr habt Über Mosquitto auch die Möglichkeit, die Einstellungen der Heizung zu verändern. Dieses erfolgt ebenfalls über ein Publish. Hier muss dem Parameter noch ein "S" vorgestellt werden. 
 
 ```
-mosquitto_pub -h 192.168.178.34 -m "S700" -t BSB-LAN -d 
+mosquitto_pub -h 192.168.178.34 -m "S710=20" -t BSB-LAN -d 
 ```
 
 **Anmerkung: Ich übernehme keine Verantwortung, wenn Ihr hier die Einstellungen über Mosquitto verändert. Ich zeige Euch an dieser Stelle nur auf, wie der Befehl lautet**
