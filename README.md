@@ -2,11 +2,11 @@
 
 "BSB-LPB-LAN" ist ein gemeinschaftliches Hard- und Softwareprojekt, welches ursprünglich zum Ziel hatte, mittels PC/Laptop/Tablet/Smartphone Zugriff auf die Steuerungen bzw. Regler von verschiedenen Wärmeerzeugern (Öl- und Gasheizungen, Wärmepumpen, Solarthermie etc.) bestimmter Hersteller (bspw. Brötje und Elco) zu erlangen. Im weiteren Verlauf wäre es dann wünschenswert, Daten auszulesen, sie weiter zu verarbeiten (z.B. loggen und grafisch darstellen) oder gar Einfluss auf die Steuerung/Regelung nehmen zu können und das System in bestehende SmartHome-Systeme einzubinden.
 
-Weitere Inflormationen gibt es hier: https://github.com/1coderookie/BSB-LPB-LAN
+Weitere Informationen gibt es hier: https://github.com/1coderookie/BSB-LPB-LAN
 
 ## Meine Installation
 
-Da ich schon meine FritzBox, Raspberry Pi, Shellies und Govee Thermometer schon über Mosquitto, Telegraf, InfluxDB und Grafana (als Docker Container) monitore, war es für mich klar, den BSB-LAN Adapter hier ebenfalls zu integrieren. 
+Da ich meine FritzBox, Raspberry Pi, Shellies und Govee Thermometer schon über Mosquitto, Telegraf, InfluxDB und Grafana (als Docker Container) monitore, war es für mich klar, den BSB-LAN Adapter hier ebenfalls zu integrieren. 
 
 Ausgang meiner TIG Installation ist das Repo von Phil Hawthorne. Danke für die Vorarbeit. Ich habe einen Teil der Dateien (Dockerfile und INIs) auf meine Bedürfnisse angepasst. Da ich Chronograf nicht nutze, habe ich es aus der Installation entfernt und Telegraf hinzugefügt. Des Weiteren habe ich die Versionen aktualisiert.
 
@@ -17,7 +17,7 @@ Anmerkung von Phil: This is a Docker image based on the awesome [Docker Image wi
 
 Voraussetzung ist, dass Ihr Telegraf, InfluxDB und Mosquitto auf Eurem System laufen habt. Wenn nicht, könnt Ihr weiter unten entnehmen, wie Ihr Euch einen TIG Container erstellt und Mosquitto installiert. Es ist kein Zwang, Docker zu verwenden.
 
-Des Weiteren müsst Ihr in den BSB-LAN Einstellungen, bei MQTT Verwenden, Rich JSON auswählen. Dann werden die Daten in folgender Struktur geliefert:
+Des Weiteren müsst Ihr in den BSB-LAN Einstellungen bei "MQTT Verwenden" "Rich JSON" auswählen. Dann werden die Daten in folgender Struktur geliefert:
 
 ```
 BSB-LAN/json {"BSB-LAN":{"id":8700,"name":"Aussentemperatur","value": "12.8","desc": "","unit": "°C","error": 0}}
