@@ -1,3 +1,8 @@
+# Hinweis
+
+Die in dieser Dokumentation enthaltenen Informationen dienen nur zur allgemeinen Information. Du solltest Dich nicht auf die Informationen in dieser Dokumentation als Grundlage für geschäftliche, rechtliche oder sonstige Entscheidungen verlassen. Es wird keine Garantie für den Inhalt dieser Dokumentation übernommen. Wenn Du Dich entscheidest, den Informationen zu folgen, geschieht dies auf eigene Gefahr. Ich übernehme keine Haftung für falsche, ungenaue, unangemessene oder unvollständige Informationen auf dieser Website. Diese Informatinen wurden nach bestem Wissen und Gewissen zusammen gestellt und geprüft.
+
+
 ## Was ist BSB-LAN
 
 "BSB-LPB-LAN" ist ein gemeinschaftliches Hard- und Softwareprojekt, welches ursprünglich zum Ziel hatte, mittels PC/Laptop/Tablet/Smartphone Zugriff auf die Steuerungen bzw. Regler von verschiedenen Wärmeerzeugern (Öl- und Gasheizungen, Wärmepumpen, Solarthermie etc.) bestimmter Hersteller (bspw. Brötje und Elco) zu erlangen. Im weiteren Verlauf wäre es dann wünschenswert, Daten auszulesen, sie weiter zu verarbeiten (z.B. loggen und grafisch darstellen) oder gar Einfluss auf die Steuerung/Regelung nehmen zu können und das System in bestehende SmartHome-Systeme einzubinden.
